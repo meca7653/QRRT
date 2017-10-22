@@ -29,12 +29,13 @@
 #' @export
 simulation_fun = function(n = 250, m = 8, n_orange = 25,
                           n_green = c(6,7,4,2,2,1,1,1,1),
-                          x = x, true_beta = true_beta){
+                          x = x, true_beta = true_beta,
+                          offset = rep(0, n)){
 
   balls = c(0:(m+1)) #balls: number on green balls and when balls == m+1 is a orange ball
   n_balls = sum(n_green) + n_orange
   p_balls = c(n_green, n_orange)/n_balls
-  lambda<-exp(x%*%true_beta) #mean of simulated data under true response
+  lambda<-exp(x%*%true_beta + offset)  #mean of simulated data under true response
   truth<-rpois(n,lambda) #truth response
   Ball = sample(balls, size = n, replace = TRUE, prob = p_balls) #add balls design to true data
   Ri = truth*(Ball == m+1) + Ball*(Ball < m+1) #simulated response Ri: the observation

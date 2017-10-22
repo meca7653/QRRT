@@ -12,9 +12,7 @@
 #' @param m max number on green balls
 #' @param n_orange number of orange balls
 #' @param n_green number of green balls
-#' @import MASS
 #' @import stats
-#' @import mvtnorm
 #'
 #'
 #' @return Data frame contains estimated beta, hypothesis result
@@ -33,12 +31,12 @@
 #'
 #' @author Meng Cao, F. Jay Breidt
 #' @export QRRT
-QRRT = function(Formula, Data, Disperse = 1, beta = NULL, n_times = 1,
+QRRT = function(Formula, Data, Disperse = 1, beta = NULL, n_times = 1, offset = rep(0, nobs),
                 m = 8, n_orange = 25,
                 n_green = c(6,7,4,2,2,1,1,1,1)){
   ############################################
-  expectation <- function(x, Ri, beta, m, p_balls){
-    lambda = exp(x%*%beta)
+  expectation <- function(x, Ri, beta, m, p_balls, offset){
+    lambda = exp(x%*%beta + offset)
     expectation = rep(NA, length(Ri))
     for (i in c(1:length(Ri))){
       if (Ri[i] <(m+1)){
@@ -50,9 +48,9 @@ QRRT = function(Formula, Data, Disperse = 1, beta = NULL, n_times = 1,
     return(expectation)
   }
   ############Likelihood Function############
-  Likelihood = function(x, Ri, beta, m, p_balls){
-    ex = expectation(x, Ri, beta, m,p_balls)
-    lambda = exp(x%*%beta)
+  Likelihood = function(x, Ri, beta, m, p_balls, offset){
+    ex = expectation(x, Ri, beta, m,p_balls, offset)
+    lambda = exp(x%*%beta + offset)
     likelihood = -sum(ex*lambda) + sum(x%*%beta*Ri*ex)
     return(likelihood)
   }
@@ -93,29 +91,29 @@ QRRT = function(Formula, Data, Disperse = 1, beta = NULL, n_times = 1,
     beta_initial[,iii] = beta
     #################normalization##############
     beta <- rnorm(n = length(beta),beta, sd = Disperse)
-    l1 = Likelihood(x,Ri, beta, m, p_balls)
-    weight = expectation(x, Ri, beta, m, p_balls)
+    l1 = Likelihood(x,Ri, beta, m, p_balls, offset)
+    weight = expectation(x, Ri, beta, m, p_balls, offset)
     data1 = data.frame(Data, weight)
-    lm1 = glm.fit(x,Y, family = poisson(), weights = weight)
+    lm1 = glm.fit(x,Y, family = poisson(), weights = weight, offset = offset)
     beta_1 = lm1$coefficients
     if (sum(is.na(beta_1))>0){
       beta_1[which(is.na(beta_1))] = 0
     }
-    l2 = Likelihood(x,Ri, beta_1, m, p_balls)
+    l2 = Likelihood(x,Ri, beta_1, m, p_balls, offset)
     j = 1
     while(abs(l1 - l2) > 1e-8){
       l1 = l2
       # print(l1)
       beta = beta_1
       # beta_result = c(beta_result, beta[1])
-      weight = expectation(x, Ri, beta, m, p_balls)
-      lm1 = glm.fit(x,Y, family = poisson(), weights = weight)
+      weight = expectation(x, Ri, beta, m, p_balls, offset)
+      lm1 = glm.fit(x,Y, family = poisson(), weights = weight, offset = offset)
       beta_1 = lm1$coefficients
       if (sum(is.na(beta_1))>0){
         beta_1[which(is.na(beta_1))] = 0
       }
       j = j+1
-      l2 = Likelihood(x,Ri, beta_1, m, p_balls)
+      l2 = Likelihood(x,Ri, beta_1, m, p_balls, offset)
 
     }
     l1_result = c(l1_result, l1)
@@ -126,12 +124,10 @@ QRRT = function(Formula, Data, Disperse = 1, beta = NULL, n_times = 1,
   beta_name = names(beta_1)
   beta_1 = beta_1_result[,which.max(l1_result)]
   names(beta_1) = beta_name
-  lambda = exp(x%*%beta_1)
+  lambda = exp(x%*%beta_1 + offset)
   fish = rep(NA, length(Ri))
   fr = rep(NA, length(Ri))
-
   dfr = matrix(NA, nrow = length(Ri), ncol = length(beta_1))
-
   R = (0:m)
   ###############
   for (i in (1:length(Ri))){
@@ -147,8 +143,6 @@ QRRT = function(Formula, Data, Disperse = 1, beta = NULL, n_times = 1,
 
   }
   dfr_final = data.frame(colSums(dfr))
-
-
   for (i in (1:length(Ri))){
     fr1 = p_balls[m+2]*dpois(R,lambda[i]) + p_balls[1:(m+1)]
     fish[i] = p_balls[m+2]*(-lambda[i] + sum(dpois(R, lambda[i])*p_balls[1:(m+1)]*(R - lambda[i])^2/fr1))
@@ -160,25 +154,17 @@ QRRT = function(Formula, Data, Disperse = 1, beta = NULL, n_times = 1,
     }
   }
   fisher = solve(fish_info)
-
   p_value<-2*pnorm(-abs(beta_1)/sqrt(diag(fisher)))
   out_pre <- cbind(beta_1 ,sqrt(diag(fisher)) , beta_1/sqrt(diag(fisher)), p_value)
   out = cbind(beta_1 /x_max, sqrt(diag(fisher)) / x_max, beta_1/sqrt(diag(fisher)), p_value)
   out = data.frame(out)
   names(out) = c("Estimate", "Std.Error", "t value" ,"Pr(>|t|)")
   max_like = sum(log(fr))
-
-
   AIC  = -2*max_like+2*length(beta_1)
   names(AIC) = "AIC"
   missing<-N-n
   sample_size<-n
-
-
-
-
   #######Wald test########
-
   beta_length = length(beta_1)
   if (beta_length >1){
     W = t(beta_1[2:beta_length])%*%fish_info[2:beta_length, 2:beta_length]%*%beta_1[2:beta_length]
@@ -187,8 +173,6 @@ QRRT = function(Formula, Data, Disperse = 1, beta = NULL, n_times = 1,
     W = t(beta_1)%*%fish_info%*%beta_1
     p_value = 1 - pchisq(W, df = (beta_length))
   }
-
-
   ########output#####
 
   fisher_report <- diag(1/x_max) %*% fisher %*% (diag(1/x_max))

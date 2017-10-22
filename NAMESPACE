@@ -2,6 +2,4 @@
 
 export(QRRT)
 export(simulation_fun)
-import(MASS)
-import(mvtnorm)
 import(stats)
