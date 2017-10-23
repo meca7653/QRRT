@@ -177,7 +177,8 @@ QRRT = function(Formula, Data, Disperse = 1, beta = NULL, n_times = 1, offset = 
 
   fisher_report <- diag(1/x_max) %*% fisher %*% (diag(1/x_max))
   result = list(out, AIC,max_like,missing,n, l1_result, dfr_final, fisher_report, out_pre)
-  names(result) = c("out", "AIC","Maximized_Log_Likelihood","Number_Missing_Values","Sample_Size", "l1_result", "score","covariance", "out_pre")
+  names(result) = c("out", "AIC","Maximized_Log_Likelihood","Number_Missing_Values",
+                    "Sample_Size", "l1_result", "score","covariance", "out_pre")
   result
   return(result)
 }
