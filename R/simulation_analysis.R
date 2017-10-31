@@ -71,6 +71,15 @@ diag(fisher)
 
 #--------------analysis simulation result------------------
 head(res_full)
+
+Sim_Data <- res_full[,1][[1]]
+a <- model.frame(Ri ~ (x1 + x2) ^ 2 + as.factor(x3), Sim_Data)
+Y <- model.response(a)
+x.matrix <- model.matrix(Ri ~ (x1 + x2) ^ 2 + as.factor(x3), data = a)
+
+a_new <- model.frame(Ri ~ (x1 + x2 + as.factor(x3)) ^ 2, Sim_Data)
+x.matrix <- model.matrix(Ri ~ (x1 + x2 + as.factor(x3)) ^ 2, data = a_new)
+
 res_over_m = do.call(rbind, res_full[,2])
 res_true_m = do.call(rbind, res_full[,3])
 
@@ -105,5 +114,15 @@ apply(fisher_res_over_m, 2, mean) # estimated fisher
 apply(fisher_est_over_m, 2, mean) # estimated variance using negative inverse second derivative
 
 
+#----------------likelihood ratio test --------------
+fisher_like_over_m = do.call(rbind, lapply(c(1:1000),
+                                          FUN = function(ii) {((res_over_m[,3])[[ii]])}))
+fisher_like_true_m = do.call(rbind, lapply(c(1:1000),
+                                          FUN = function(ii) {((res_true_m[,3])[[ii]])}))
+p_value = 1 - pchisq(- 2 * fisher_like_true_m + 2 * fisher_like_over_m, df = 4)
+par(mfrow = c(1,2))
+hist(p_value)
+qqplot(qchisq(ppoints(100), df = 4), - 2 * fisher_like_true_m + 2 * fisher_like_over_m)
+abline(0,1, col = "red")
 
-
+sum(p_value < 0.05)
