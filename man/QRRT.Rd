@@ -27,11 +27,11 @@ QRRT(Formula, Data, Disperse = 1, beta = NULL, n_times = 1,
 }
 \value{
 Data frame contains estimated beta, hypothesis result
-\itme{Results} {a named matrix of coefficients, standard error, t statistics and p-value}
+\item{Results} {a named matrix of coefficients, standard error, t statistics and p-value}
 
 \item{AIC}{A version of Akaike's An Information Criterion minus twice the maximized log-likelihood plus twice the number of parameters}
 
-\itme{Maximized_Log_Likelihood}{log-likelihood with estimated coefficients}
+\item{Maximized_Log_Likelihood}{log-likelihood with estimated coefficients}
 
 \item{Number_Missing_Values}{number of missing value in data set}
 
