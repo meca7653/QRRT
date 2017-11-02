@@ -27,20 +27,19 @@ QRRT(Formula, Data, Disperse = 1, beta = NULL, n_times = 1,
 }
 \value{
 Data frame contains estimated beta, hypothesis result
-Results a named matrix of coefficients, standard error, t statistics and p-value
+\itme{Results} {a named matrix of coefficients, standard error, t statistics and p-value}
 
-AIC    A version of Akaike's An Information Criterion
-       minus twice the maximized log-likelihood plus twice the number of parameters
+\item{AIC}{A version of Akaike's An Information Criterion minus twice the maximized log-likelihood plus twice the number of parameters}
 
-Maximized_Log_Likelihood     log-likelihood with estimated coefficients
+\itme{Maximized_Log_Likelihood}{log-likelihood with estimated coefficients}
 
-Number_Missing_Values     number of missing value in data set
+\item{Number_Missing_Values}{number of missing value in data set}
 
-Likelihood_by_Starting_Value     optimized likelihood value with different starting value
+\item{Likelihood_by_Starting_Value}{optimized likelihood value with different starting value}
 
-Score      score vector
+\item{Score}{score vector}
 
-Inverse_Fisher_Information     estimated covariance matrix
+\item{Inverse_Fisher_Information}{estimated covariance matrix}
 }
 \description{
 Analysis QRRT data
