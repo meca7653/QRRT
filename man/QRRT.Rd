@@ -27,7 +27,7 @@ QRRT(Formula, Data, Disperse = 1, beta = NULL, n_times = 1,
 }
 \value{
 Data frame contains estimated beta, hypothesis result
-\item{Results} {a named matrix of coefficients, standard error, t statistics and p-value}
+\item{Results}{a named matrix of coefficients, standard error, t statistics and p-value}
 
 \item{AIC}{A version of Akaike's An Information Criterion minus twice the maximized log-likelihood plus twice the number of parameters}
 
