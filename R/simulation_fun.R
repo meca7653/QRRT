@@ -9,7 +9,7 @@
 #' @param n_green number of green balls
 #' @param x design matrix
 #' @param true_beta true parameter of beta
-#'
+#' @param offset NULL or a numeric vector of length equal to the number of cases
 #'
 #' @return Data frame contains the observation and design matrix
 #'
@@ -30,7 +30,10 @@
 simulation_fun = function(n = 250, m = 8, n_orange = 25,
                           n_green = c(6,7,4,2,2,1,1,1,1),
                           x = x, true_beta = true_beta,
-                          offset = rep(0, n)){
+                          offset = NULL){
+  if(is.null(offset)){
+    offset <- rep(0, n)
+  }
 
   balls = c(0:(m+1)) #balls: number on green balls and when balls == m+1 is a orange ball
   n_balls = sum(n_green) + n_orange

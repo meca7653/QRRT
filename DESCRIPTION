@@ -1,11 +1,10 @@
 Package: QRRT
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Poisson regression with QRRT data
 Version: 0.1.0
 Author: Meng Cao, F. Jay Breidt
 Maintainer: The package maintainer <meng.cao@colostate.edu>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description:  Poisson regression with quantitative randomized response technique (QRRT) data, based on maximum likelihood implemented via the EM algorithm.
 Depends:
     R (>= 3.2.2)
 Imports:

@@ -5,7 +5,7 @@
 \title{Simulated data}
 \usage{
 simulation_fun(n = 250, m = 8, n_orange = 25, n_green = c(6, 7, 4, 2, 2,
-  1, 1, 1, 1), x = x, true_beta = true_beta)
+  1, 1, 1, 1), x = x, true_beta = true_beta, offset = NULL)
 }
 \arguments{
 \item{n}{sample size}
@@ -19,6 +19,8 @@ simulation_fun(n = 250, m = 8, n_orange = 25, n_green = c(6, 7, 4, 2, 2,
 \item{x}{design matrix}
 
 \item{true_beta}{true parameter of beta}
+
+\item{offset}{NULL or a numeric vector of length equal to the number of cases}
 }
 \value{
 Data frame contains the observation and design matrix
