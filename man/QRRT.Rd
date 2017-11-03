@@ -2,7 +2,7 @@
 % Please edit documentation in R/QRRT_V7.R
 \name{QRRT}
 \alias{QRRT}
-\title{QRRT}
+\title{Poisson regression for QRRT data}
 \usage{
 QRRT(Formula, Data, Disperse = 1, beta = NULL, n_times = 1,
   offset = NULL, b_distribution = c(6, 7, 4, 2, 2, 1, 1, 1, 1, 25)/50,
@@ -28,11 +28,6 @@ Default is from Conteh et al. (2015).}
 
 \item{tolerance}{EM convergence criterion for change in log-likelihood}
 
-
-}
-\value{
-Data frame contains estimated beta, hypothesis result
-
 \item{Results}{a matrix including maximum likelihood estimates of regression coefficients and  estimated asymptotic standard errors,
 along with corresponding t-statistics and p-values}
 
@@ -49,8 +44,11 @@ minus twice the maximized log-likelihood plus twice the number of parameters}
 
 \item{Inverse_Fisher_Information}{estimated variance-covariance matrix for maximum likelihood estimate of regression coefficient vector}
 }
+\value{
+Data frame contains estimated beta, hypothesis result
+}
 \description{
-Analysis QRRT data
+Poisson regression for quantitative randomized response technique (QRRT) data, based on maximum likelihood implemented via the EM algorithm
 }
 \examples{
 #-------------------------------------------------------------------------------------

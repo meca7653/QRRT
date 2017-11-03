@@ -1,8 +1,8 @@
 #######################################
 #' @name QRRT
 #' @aliases QRRT
-#' @title QRRT
-#' @description Analysis QRRT data
+#' @title Poisson regression for QRRT data
+#' @description Poisson regression for quantitative randomized response technique (QRRT) data, based on maximum likelihood implemented via the EM algorithm
 #'
 #' @param Formula symbolic description of the model to be fitted using the same
 #' specification as the lm function for linear models
