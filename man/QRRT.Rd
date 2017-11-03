@@ -28,6 +28,11 @@ Default is from Conteh et al. (2015).}
 
 \item{tolerance}{EM convergence criterion for change in log-likelihood}
 
+
+}
+\value{
+Data frame contains estimated beta, hypothesis result
+
 \item{Results}{a matrix including maximum likelihood estimates of regression coefficients and  estimated asymptotic standard errors,
 along with corresponding t-statistics and p-values}
 
@@ -43,9 +48,6 @@ minus twice the maximized log-likelihood plus twice the number of parameters}
 \item{Score}{score vector evaluated at the maximum likelihood estimate of regression coefficient vector}
 
 \item{Inverse_Fisher_Information}{estimated variance-covariance matrix for maximum likelihood estimate of regression coefficient vector}
-}
-\value{
-Data frame contains estimated beta, hypothesis result
 }
 \description{
 Poisson regression for quantitative randomized response technique (QRRT) data, based on maximum likelihood implemented via the EM algorithm
