@@ -4,32 +4,33 @@
 #' @title QRRT
 #' @description Analysis QRRT data
 #'
-#' @param Formula same model specification as linear model (lm)
-#' @param Data a data frame containing the variables in the model
+#' @param Formula symbolic description of the model to be fitted using the same
+#' specification as the lm function for linear models
+#' @param Data data frame containing the variables in the model
+#' @param beta NULL for random starting values or a specified starting value
+#' for regression coefficients
 #' @param Disperse standard deviation of the random starting values for beta
-#' @param beta specified starting value for regression coefficients
 #' @param n_times number of random starting values for beta
 #' @param offset NULL or a numeric vector of length equal to the number of cases
-#' @param b_distribution prob distribution on 0, 1, ..., m, m + 1
+#' @param b_distribution probability distribution on 0, 1, ..., m, m + 1.
+#' Default is from Conteh et al. (2015).
 #' @param tolerance EM convergence criterion for change in log-likelihood
 #' @import stats
 #'
 #'
 #' @return Data frame contains estimated beta, hypothesis result
-#' Results a named matrix of coefficients, standard error, t statistics and p-value
+#' @param Results a matrix including maximum likelihood estimates of regression coefficients and  estimated asymptotic standard errors,
+#' along with corresponding t-statistics and p-values
 #'
-#' AIC    A version of Akaike's An Information Criterion
-#'        minus twice the maximized log-likelihood plus twice the number of parameters
+#' @param AIC Akaike's An Information Criterion:
+#' minus twice the maximized log-likelihood plus twice the number of parameters
 #'
-#' Maximized_Log_Likelihood     log-likelihood with estimated coefficients
+#' @param Maximized_Log_Likelihood log-likelihood at the estimated coefficient values
+#' @param Likelihood_by_Starting_Value maximized likelihood at each of the n_times starting values
+#' @param Number_Missing_Values number of missing value in Data
+#' @param Score score vector evaluated at the maximum likelihood estimate of regression coefficient vector
 #'
-#' Number_Missing_Values     number of missing value in data set
-#'
-#' Likelihood_by_Starting_Value     optimized likelihood value with different starting value
-#'
-#' Score      score vector
-#'
-#' Inverse_Fisher_Information     estimated covariance matrix
+#' @param Inverse_Fisher_Information estimated variance-covariance matrix for maximum likelihood estimate of regression coefficient vector
 #'
 #'
 #' @examples

@@ -9,37 +9,43 @@ QRRT(Formula, Data, Disperse = 1, beta = NULL, n_times = 1,
   tolerance = 1e-08)
 }
 \arguments{
-\item{Formula}{same model specification as linear model (lm)}
+\item{Formula}{symbolic description of the model to be fitted using the same
+specification as the lm function for linear models}
 
-\item{Data}{a data frame containing the variables in the model}
+\item{Data}{data frame containing the variables in the model}
 
 \item{Disperse}{standard deviation of the random starting values for beta}
 
-\item{beta}{specified starting value for regression coefficients}
+\item{beta}{NULL for random starting values or a specified starting value
+for regression coefficients}
 
 \item{n_times}{number of random starting values for beta}
 
 \item{offset}{NULL or a numeric vector of length equal to the number of cases}
 
-\item{b_distribution}{prob distribution on 0, 1, ..., m, m + 1}
+\item{b_distribution}{probability distribution on 0, 1, ..., m, m + 1.
+Default is from Conteh et al. (2015).}
 
 \item{tolerance}{EM convergence criterion for change in log-likelihood}
+
+\item{Results}{a matrix including maximum likelihood estimates of regression coefficients and  estimated asymptotic standard errors,
+along with corresponding t-statistics and p-values}
+
+\item{AIC}{Akaike's An Information Criterion:
+minus twice the maximized log-likelihood plus twice the number of parameters}
+
+\item{Maximized_Log_Likelihood}{log-likelihood at the estimated coefficient values}
+
+\item{Likelihood_by_Starting_Value}{maximized likelihood at each of the n_times starting values}
+
+\item{Number_Missing_Values}{number of missing value in Data}
+
+\item{Score}{score vector evaluated at the maximum likelihood estimate of regression coefficient vector}
+
+\item{Inverse_Fisher_Information}{estimated variance-covariance matrix for maximum likelihood estimate of regression coefficient vector}
 }
 \value{
 Data frame contains estimated beta, hypothesis result
-\item{Results}{a named matrix of coefficients, standard error, t statistics and p-value}
-
-\item{AIC}{A version of Akaike's An Information Criterion minus twice the maximized log-likelihood plus twice the number of parameters}
-
-\item{Maximized_Log_Likelihood}{log-likelihood with estimated coefficients}
-
-\item{Number_Missing_Values}{number of missing value in data set}
-
-\item{Likelihood_by_Starting_Value}{optimized likelihood value with different starting value}
-
-\item{Score}{score vector}
-
-\item{Inverse_Fisher_Information}{estimated covariance matrix}
 }
 \description{
 Analysis QRRT data
