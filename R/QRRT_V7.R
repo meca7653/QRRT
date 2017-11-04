@@ -18,7 +18,7 @@
 #' @import stats
 #'
 #'
-#' @return Data frame contains estimated beta, hypothesis result
+#' @return List containing the following elements:
 #' @param Results a matrix including maximum likelihood estimates of regression coefficients and  estimated asymptotic standard errors,
 #' along with corresponding t-statistics and p-values
 #'

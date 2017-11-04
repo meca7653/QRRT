@@ -31,8 +31,7 @@ Default is from Conteh et al. (2015).}
 
 }
 \value{
-Data frame contains estimated beta, hypothesis result
-
+List containing the following elements:
 \item{Results}{a matrix including maximum likelihood estimates of regression coefficients and  estimated asymptotic standard errors,
 along with corresponding t-statistics and p-values}
 
