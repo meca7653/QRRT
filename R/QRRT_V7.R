@@ -73,14 +73,14 @@
 #' # Fit model with all two-way interactions, using 10 random starting values.
 #' fit_2way <- QRRT(Formula = Ri ~ (x1 + x2 + as.factor(x3)) ^ 2,
 #'                  Data = Sim_Data, Disperse = 1, beta = NULL, n_times = 10,
-#'                  offset = rep(0, n),
+#'                  offset = NULL,
 #'                  b_distribution = c(6, 7, 4, 2, 2, 1, 1, 1, 1, 25) / 50)
 #' fit_2way$Results
 #' #------------------------------------------------------------------------------------
 #' #Fit model correctly-specified as the actual simulation model.
 #' fit_truemodel <- QRRT(Formula = Ri ~ (x1 + x2) ^ 2 + as.factor(x3),
 #'                       Data = Sim_Data, Disperse = 1, beta = NULL, n_times = 1,
-#'                    offset = rep(0, n),
+#'                    offset = NULL,
 #'                    b_distribution = c(6, 7, 4, 2, 2, 1, 1, 1, 1, 25) / 50)
 #' fit_truemodel$Results
 #' #------------------------------------------------------------------------------------
