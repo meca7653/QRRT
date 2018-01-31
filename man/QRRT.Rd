@@ -28,10 +28,10 @@ Default is from Conteh et al. (2015).}
 
 \item{tolerance}{EM convergence criterion for change in log-likelihood}
 
-
 }
 \value{
 List containing the following elements:
+
 \item{Results}{a matrix including maximum likelihood estimates of regression coefficients and  estimated asymptotic standard errors,
 along with corresponding t-statistics and p-values}
 
@@ -115,6 +115,13 @@ round(fit_2way$Results, 3)
 \references{
 Conteh A, Gavin MC, Solomon J. Quantifying illegal hunting: A novel application of the quantitative randomised response technique.
 Biological Conservation. 2015;189:16-23.
+
+Liu P, Chow L. A New Discrete Quantitative Randomized Response Model.
+Journal of the American Statistical Association. 1976;71(353):72–73.
+
+Cao M, Breidt F.J, Solomon J, Conteh A, Gavin M. Understanding the Drivers of
+Sensitive Behavior Using Poisson Regression from Quantitative Randomized Response Technique Data. Paper under written.
+Colorado State University
 }
 \author{
 Meng Cao, F. Jay Breidt

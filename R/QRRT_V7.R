@@ -95,24 +95,33 @@
 #' round(fit_2way$Results, 3)
 #' @references Conteh A, Gavin MC, Solomon J. Quantifying illegal hunting: A novel application of the quantitative randomised response technique.
 #' Biological Conservation. 2015;189:16-23.
-#'
+#' @references Liu P, Chow L. A New Discrete Quantitative Randomized Response Model.
+#' Journal of the American Statistical Association. 1976;71(353):72–73.
+#' @references Cao M, Breidt F.J, Solomon J, Conteh A, Gavin M. Understanding the Drivers of
+#' Sensitive Behavior Using Poisson Regression from Quantitative Randomized Response Technique Data. Paper under written.
+#' Colorado State University
 #' @author Meng Cao, F. Jay Breidt
 #' @export QRRT
-QRRT = function(Formula, Data, Disperse = 1, beta = NULL, n_times = 1,
+QRRT = function(Formula,
+                Data,
+                Disperse = 1,
+                beta = NULL,
+                n_times = 1,
                 offset = NULL,
                 b_distribution = c(6, 7, 4, 2, 2, 1, 1, 1, 1, 25) / 50,
-                tolerance = 1e-8){
-  m <- length(b_distribution) - 2 # b distribution has mass on 0, 1, ..., m and m+1
+                tolerance = 1e-8) {
+  m <-
+    length(b_distribution) - 2 # b distribution has mass on 0, 1, ..., m and m+1
   #--------------------------------------------------------------------------------
   # Conditional expectation for the E-step.
-  expectation <- function(x, Ri, beta, m, b_distribution, offset){
+  expectation <- function(x, Ri, beta, m, b_distribution, offset) {
     lambda <- exp(x %*% beta + offset)
     expectation <- rep(NA, length(Ri))
-    for (i in c(1:length(Ri))){
-      if (Ri[i] < (m + 1)){
+    for (i in c(1:length(Ri))) {
+      if (Ri[i] < (m + 1)) {
         expectation[i] <- dpois(Ri[i], lambda[i]) * b_distribution[m + 2] /
           (b_distribution[Ri[i] + 1] + dpois(Ri[i], lambda[i]) * b_distribution[m + 2])
-      }else{
+      } else{
         expectation[i] <- 1
       }
     }
@@ -120,8 +129,8 @@ QRRT = function(Formula, Data, Disperse = 1, beta = NULL, n_times = 1,
   }
   #--------------------------------------------------------------------------------
   ##  Likelihood function
-  Likelihood <- function(x, Ri, beta, m, b_distribution, offset){
-    ex <- expectation(x, Ri, beta, m,b_distribution, offset)
+  Likelihood <- function(x, Ri, beta, m, b_distribution, offset) {
+    ex <- expectation(x, Ri, beta, m, b_distribution, offset)
     lambda <- exp(x %*% beta + offset)
     likelihood <- -sum(ex * lambda) + sum(x %*% beta * Ri * ex)
     return(likelihood)
@@ -130,20 +139,22 @@ QRRT = function(Formula, Data, Disperse = 1, beta = NULL, n_times = 1,
 
   N <- dim(Data)[1]
   a <- model.frame(Formula, Data)
-  Y <- model.response(a)
   x.matrix <- model.matrix(Formula, data = a)
   Data <- a
   x_max <- apply(abs(x.matrix), 2, max)
-  if(sum(x_max == 0) >0){
-    print(paste0("Error: singularity in design matrix: column ", which(x_max == 0),
-                 " identically zero"))
+  if (sum(x_max == 0) > 0) {
+    print(paste0(
+      "Error: singularity in design matrix: column ",
+      which(x_max == 0),
+      " identically zero"
+    ))
     return()
   }
   x <- x.matrix %*% (diag(1 / x_max))
 
   n <- dim(x)[1]
 
-  if(is.null(offset)){
+  if (is.null(offset)) {
     offset <- rep(0, n)
   }
 
@@ -154,13 +165,13 @@ QRRT = function(Formula, Data, Disperse = 1, beta = NULL, n_times = 1,
   beta_initial <- matrix(NA, nrow = dim(x)[2], ncol = n_times)
 
   beta_1_result <- matrix(NA, nrow = dim(x)[2], ncol = n_times)
-  if(is.null(beta)){
+  if (is.null(beta)) {
     beta <- rnorm(n = dim(x)[2], sd = Disperse)# random starting values
-  }else{
+  } else{
     beta <- beta
   }
 
-  for (iii in c(1:n_times)){
+  for (iii in c(1:n_times)) {
     beta_initial[, iii] <- beta
     #-----------------------------------------------------------------------------
     # Initialize the EM algorithm, starting from random beta.
@@ -168,16 +179,21 @@ QRRT = function(Formula, Data, Disperse = 1, beta = NULL, n_times = 1,
     l1 <- Likelihood(x, Ri, beta, m, b_distribution, offset)
     weight <- expectation(x, Ri, beta, m, b_distribution, offset)
     data1 <- data.frame(Data, weight)
-    lm1 <- glm.fit(x, Y, family = poisson(), weights = weight, offset = offset)
+    lm1 <-
+      glm.fit(x,
+              Ri,
+              family = poisson(),
+              weights = weight,
+              offset = offset)
     beta_1 <- lm1$coefficients
-    if (sum(is.na(beta_1))>0){
+    if (sum(is.na(beta_1)) > 0) {
       beta_1[which(is.na(beta_1))] = 0
     }
     l2 <- Likelihood(x, Ri, beta_1, m, b_distribution, offset)
     #-----------------------------------------------------------------------------
     # Iterate EM algorithm to convergence.
     j <- 1
-    while(abs(l1 - l2) > tolerance){
+    while (abs(l1 - l2) > tolerance) {
       l1 <- l2
       beta <- beta_1
       #-----------------------------------------------------------------------------
@@ -185,9 +201,14 @@ QRRT = function(Formula, Data, Disperse = 1, beta = NULL, n_times = 1,
       weight <- expectation(x, Ri, beta, m, b_distribution, offset)
       # M-step of EM algorithm:  maximize the weighted log-likelihood
       # for Poisson regression, using case weights obtained from the E-step.
-      lm1 <- glm.fit(x, Y, family = poisson(), weights = weight, offset = offset)
+      lm1 <-
+        glm.fit(x,
+                Ri,
+                family = poisson(),
+                weights = weight,
+                offset = offset)
       beta_1 <- lm1$coefficients
-      if (sum(is.na(beta_1)) > 0){
+      if (sum(is.na(beta_1)) > 0) {
         beta_1[which(is.na(beta_1))] <- 0
       }
       j <- j + 1
@@ -198,7 +219,7 @@ QRRT = function(Formula, Data, Disperse = 1, beta = NULL, n_times = 1,
     #-----------------------------------------------------------------------------
     # Store log-likelihoods for each raandom start, for later comparison.
     l1_result <- c(l1_result, l1)
-    beta_1_result[,iii] <- beta_1
+    beta_1_result[, iii] <- beta_1
     print(iii)
     beta <- beta_1
   }
@@ -213,40 +234,48 @@ QRRT = function(Formula, Data, Disperse = 1, beta = NULL, n_times = 1,
   dfr <- matrix(NA, nrow = length(Ri), ncol = length(beta_1))
   R <- (0:m)
   ###############
-  for (i in (1:length(Ri))){
-    if (sum(R == Ri[i]) > 0){
+  for (i in (1:length(Ri))) {
+    if (sum(R == Ri[i]) > 0) {
       fr[i] <- b_distribution[m + 2] * dpois(Ri[i], lambda[i]) +
         b_distribution[which(R == Ri[i])]
-    }else{
+    } else{
       fr[i] = b_distribution[m + 2] * dpois(Ri[i], lambda[i])
     }
 
-    for (j in c(1:length(beta_1))){
+    for (j in c(1:length(beta_1))) {
       dfr[i, j] <- x[i, j] * 1 / fr[i] * b_distribution[m + 2] *
         (Ri[i] - lambda[i]) * dpois(Ri[i], lambda[i])
     }
 
   }
   dfr_final <- data.frame(colSums(dfr))
-  for (i in (1:length(Ri))){
-    fr1 <- b_distribution[m + 2] * dpois(R, lambda[i]) + b_distribution[1:(m + 1)]
+  for (i in (1:length(Ri))) {
+    fr1 <-
+      b_distribution[m + 2] * dpois(R, lambda[i]) + b_distribution[1:(m + 1)]
     fish[i] <- b_distribution[m + 2] *
       (-lambda[i] + sum(dpois(R, lambda[i]) * b_distribution[1:(m + 1)] *
                           (R - lambda[i]) ^ 2 / fr1))
   }
-  fish_info <- matrix(rep(NA, length(beta_1) ^ 2), ncol = length(beta_1))
-  for (i in (1:length(beta_1))){
-    for (j in (1:length(beta_1))){
+  fish_info <-
+    matrix(rep(NA, length(beta_1) ^ 2), ncol = length(beta_1))
+  for (i in (1:length(beta_1))) {
+    for (j in (1:length(beta_1))) {
       fish_info[i, j] <- -sum(fish * x[, i] * x[, j])
     }
   }
   inverse_fisher_info <- solve(fish_info)
-  p_value <- 2 * pnorm(-abs(beta_1) / sqrt(diag(inverse_fisher_info)))
-  out_pre <- cbind(beta_1, sqrt(diag(inverse_fisher_info)), beta_1 / sqrt(diag(inverse_fisher_info)), p_value)
-  out <- cbind(beta_1 / x_max, sqrt(diag(inverse_fisher_info)) / x_max,
-               beta_1 / sqrt(diag(inverse_fisher_info)), p_value)
+  p_value <-
+    2 * pnorm(-abs(beta_1) / sqrt(diag(inverse_fisher_info)))
+  out_pre <-
+    cbind(beta_1, sqrt(diag(inverse_fisher_info)), beta_1 / sqrt(diag(inverse_fisher_info)), p_value)
+  out <-
+    cbind(beta_1 / x_max,
+          sqrt(diag(inverse_fisher_info)) / x_max,
+          beta_1 / sqrt(diag(inverse_fisher_info)),
+          p_value)
   out <- data.frame(out)
-  names(out) <- c("Estimate", "Std.Error", "t-statistic", "Pr(>|t|)")
+  names(out) <-
+    c("Estimate", "Std.Error", "t-statistic", "Pr(>|t|)")
   max_like <- sum(log(fr))
   AIC  <- -2 * max_like + 2 * length(beta_1)
   names(AIC) <- "AIC"
@@ -255,23 +284,39 @@ QRRT = function(Formula, Data, Disperse = 1, beta = NULL, n_times = 1,
   #--------------------------------------------------------------------------------
   #######Wald test########
   beta_length <- length(beta_1)
-  if (beta_length >1){
-    W <- t(beta_1[2:beta_length]) %*% fish_info[2:beta_length, 2:beta_length] %*%
+  if (beta_length > 1) {
+    W <-
+      t(beta_1[2:beta_length]) %*% fish_info[2:beta_length, 2:beta_length] %*%
       beta_1[2:beta_length]
     p_value <- 1 - pchisq(W, df = (beta_length - 1))
-  }else{
+  } else{
     W <- t(beta_1) %*% fish_info %*% beta_1
     p_value <- 1 - pchisq(W, df = (beta_length))
   } # Wald test does not seem to be returned.  Might delete.
   #--------------------------------------------------------------------------------
   ########output#####
 
-  inverse_fisher_info_report <- diag(1 / x_max) %*% inverse_fisher_info %*% (diag(1 / x_max))
-  result <- list(out, AIC,max_like, missing, n, l1_result, dfr_final,
-                 inverse_fisher_info_report)
-  names(result) <- c("Results", "AIC", "Maximized_Log_Likelihood",
-                     "Number_Missing_Values",
-                    "Sample_Size", "Likelihood_by_Starting_Value", "Score", "Inverse_Fisher_Information")
+  inverse_fisher_info_report <-
+    diag(1 / x_max) %*% inverse_fisher_info %*% (diag(1 / x_max))
+  result <-
+    list(out,
+         AIC,
+         max_like,
+         missing,
+         n,
+         l1_result,
+         dfr_final,
+         inverse_fisher_info_report)
+  names(result) <- c(
+    "Results",
+    "AIC",
+    "Maximized_Log_Likelihood",
+    "Number_Missing_Values",
+    "Sample_Size",
+    "Likelihood_by_Starting_Value",
+    "Score",
+    "Inverse_Fisher_Information"
+  )
   return(result)
 }
 #####End QRRT function.
