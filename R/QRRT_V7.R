@@ -151,9 +151,7 @@ QRRT = function(Formula,
     return()
   }
   x <- x.matrix %*% (diag(1 / x_max))
-
   n <- dim(x)[1]
-
   if (is.null(offset)) {
     offset <- rep(0, n)
   }
@@ -218,7 +216,35 @@ QRRT = function(Formula,
     # End of EM algorithm for this random start of EM algorithm.
     #-----------------------------------------------------------------------------
     # Store log-likelihoods for each raandom start, for later comparison.
-    l1_result <- c(l1_result, l1)
+
+    expectation.saturated <- function(Ri, x, beta, m, b_distribution){
+      # lambda <- exp(x %*% beta + offset)
+      expectation <- rep(NA, length(Ri))
+      lambda <- exp(x %*% beta + offset)
+      # expectation <- rep(NA, length(Ri))
+      for (i in c(1:length(Ri))){
+        expectation[i] <- lambda[i] * b_distribution[m + 2] +
+          sum((b_distribution[1:(m+1)] *  c(0:m)))
+
+      }
+      ###########likelihood###############
+      fr <- rep(NA, length(Ri))
+      R <- (0:m)
+      ###############
+      for (i in (1:length(Ri))){
+        if (sum(R == Ri[i]) > 0){
+          fr[i] <- b_distribution[m + 2] * dpois(Ri[i], lambda[i]) +
+            b_distribution[which(R == Ri[i])]
+        }else{
+          fr[i] = b_distribution[m + 2] * dpois(Ri[i], lambda[i])
+        }
+      }
+
+
+      return(sum(log(fr)))
+    }
+
+    l1_result <- c(l1_result, expectation.saturated(Ri, x, beta_1, m, b_distribution))
     beta_1_result[, iii] <- beta_1
     print(iii)
     beta <- beta_1
