@@ -79,7 +79,7 @@
 #' #------------------------------------------------------------------------------------
 #' #Fit model correctly-specified as the actual simulation model.
 #' fit_truemodel <- QRRT(Formula = Ri ~ (x1 + x2) ^ 2 + as.factor(x3),
-#'                       Data = Sim_Data, Disperse = 1, beta = NULL, n_times = 1,
+#'                       Data = Sim_Data, Disperse = 1, beta = NULL, n_times = 10,
 #'                    offset = NULL,
 #'                    b_distribution = c(6, 7, 4, 2, 2, 1, 1, 1, 1, 25) / 50)
 #' fit_truemodel$Results
@@ -87,7 +87,7 @@
 #' # Coefficient of x1 in simulated model is 1; use this fact to illustrate
 #' # inclusion of an offset in the model.
 #' fit_offset <- QRRT(Formula = Ri ~ x2 + x1:x2 + as.factor(x3),
-#'                 Data = Sim_Data, Disperse = 1, beta = NULL, n_times = 2,
+#'                 Data = Sim_Data, Disperse = 1, beta = NULL, n_times = 10,
 #'                 offset = x1,
 #'                 b_distribution = c(6, 7, 4, 2, 2, 1, 1, 1, 1, 25) / 50)
 #' fit_offset$Results
@@ -243,7 +243,6 @@ QRRT = function(Formula,
 
       return(sum(log(fr)))
     }
-
     l1_result <- c(l1_result, expectation.saturated(Ri, x, beta_1, m, b_distribution))
     beta_1_result[, iii] <- beta_1
     print(iii)
