@@ -101,7 +101,7 @@
 #'  PAAfterWar + NoRestriction + EfficientConservation + AfterPatrol +
 #'  QuickApprehend + Punished + OutsidersHunted + ResidentsHunted +
 #'  AnimalsRare + Seaside + Rural + HighDisplace
-#'  res <- QRRT(Formula = F.formula,
+#'res <- QRRT(Formula = F.formula,
 #'  Data = QRRT_data,
 #'  n_times = 20)
 #' @references Conteh A, Gavin MC, Solomon J. Quantifying illegal hunting: A novel application of the quantitative randomised response technique.

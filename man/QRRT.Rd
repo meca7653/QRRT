@@ -28,6 +28,7 @@ Default is from Conteh et al. (2015).}
 
 \item{tolerance}{EM convergence criterion for change in log-likelihood}
 
+
 }
 \value{
 List containing the following elements:
@@ -118,7 +119,7 @@ F.formula <- times.month.trap ~ Residencetime + Education.level + HouseholdSize 
  PAAfterWar + NoRestriction + EfficientConservation + AfterPatrol +
  QuickApprehend + Punished + OutsidersHunted + ResidentsHunted +
  AnimalsRare + Seaside + Rural + HighDisplace
- res <- QRRT(Formula = F.formula,
+res <- QRRT(Formula = F.formula,
  Data = QRRT_data,
  n_times = 20)
 }
