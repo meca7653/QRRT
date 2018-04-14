@@ -31,7 +31,6 @@ Default is from Conteh et al. (2015).}
 }
 \value{
 List containing the following elements:
-
 \item{Results}{a matrix including maximum likelihood estimates of regression coefficients and  estimated asymptotic standard errors,
 along with corresponding t-statistics and p-values}
 
@@ -48,7 +47,6 @@ minus twice the maximized log-likelihood plus twice the number of parameters}
 
 \item{Inverse_Fisher_Information}{estimated variance-covariance matrix for maximum likelihood estimate of regression coefficient vector}
 }
-
 \description{
 Poisson regression for quantitative randomized response technique (QRRT) data, based on maximum likelihood implemented via the EM algorithm
 }
@@ -112,6 +110,17 @@ fit_offset <- QRRT(Formula = Ri ~ x2 + x1:x2 + as.factor(x3),
 fit_offset$Results
 #------------------------------------------------------------------------------------
 round(fit_2way$Results, 3)
+
+#------------------------------------------------------------------------------------
+# Real data example
+load(QRRT_data)
+F.formula <- times.month.trap ~ Residencetime + Education.level + HouseholdSize +
+ PAAfterWar + NoRestriction + EfficientConservation + AfterPatrol +
+ QuickApprehend + Punished + OutsidersHunted + ResidentsHunted +
+ AnimalsRare + Seaside + Rural + HighDisplace
+ res <- QRRT(Formula = F.formula,
+ Data = QRRT_data,
+ n_times = 20)
 }
 \references{
 Conteh A, Gavin MC, Solomon J. Quantifying illegal hunting: A novel application of the quantitative randomised response technique.
