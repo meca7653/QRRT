@@ -114,14 +114,14 @@ round(fit_2way$Results, 3)
 
 #------------------------------------------------------------------------------------
 # Real data example
-load(QRRT_data)
+data(QRRT_data)
 F.formula <- times.month.trap ~ Residencetime + Education.level + HouseholdSize +
  PAAfterWar + NoRestriction + EfficientConservation + AfterPatrol +
  QuickApprehend + Punished + OutsidersHunted + ResidentsHunted +
  AnimalsRare + Seaside + Rural + HighDisplace
 res <- QRRT(Formula = F.formula,
  Data = QRRT_data,
- n_times = 20)
+ n_times = 1)
 }
 \references{
 Conteh A, Gavin MC, Solomon J. Quantifying illegal hunting: A novel application of the quantitative randomised response technique.
